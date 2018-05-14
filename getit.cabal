@@ -60,7 +60,9 @@ executable getit
   -- other-extensions:    
   
   -- Other library packages from which modules are imported.
-  build-depends:       base >=4.9 && <4.10
+  build-depends:       base >=4.9 && <4.10,
+                       datetime >= 0.3.0
+      
   
   -- Directories containing source files.
   hs-source-dirs:      src
