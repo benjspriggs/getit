@@ -4,6 +4,7 @@ import Control.Monad
 import System.Environment
 import System.Console.Docopt
 import Item
+import Tasks
 
 patterns :: Docopt
 patterns = [docoptFile|src/USAGE.txt|]
