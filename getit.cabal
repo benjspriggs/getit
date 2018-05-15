@@ -61,7 +61,9 @@ executable getit
   
   -- Other library packages from which modules are imported.
   build-depends:       base >=4.9 && <4.10,
-                       datetime >= 0.3.0
+                       datetime >= 0.3.0,
+                       docopt >= 0.7.0.5
+
       
   
   -- Directories containing source files.

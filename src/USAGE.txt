@@ -1,0 +1,8 @@
+Usage:
+	getit new <name> <due-by>
+	getit list
+	getit done <name>
+
+Options:
+	-h, --help	Show this screen.
+	--version	Show version.
