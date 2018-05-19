@@ -6,4 +6,4 @@ Usage:
 Options:
 	-h, --help	Show this screen.
 	--version	Show version.
-	--it <list>	Filename for the todo list. [default=./.getit.list]
+	--it <list>	Filename for the todo list. [default: ./.getit.list]
