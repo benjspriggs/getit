@@ -1,6 +1,7 @@
 Usage:
 	getit [options] new <name> <due-by>
 	getit [options] list
+	getit [options] store
 	getit [options] done <name>
 
 Options:

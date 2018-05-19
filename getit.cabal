@@ -63,7 +63,8 @@ executable getit
   build-depends:       base >=4.9 && <4.10,
                        datetime >= 0.3.0,
                        docopt >= 0.7.0.5,
-                       utility-ht >= 0.0.14
+                       utility-ht >= 0.0.14,
+                       text >= 1.2.3.0
   
   -- Directories containing source files.
   hs-source-dirs:      src

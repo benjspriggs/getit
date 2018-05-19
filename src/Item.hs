@@ -4,7 +4,7 @@ import Data.DateTime
 data TodoItem = Todo { date :: DateTime
                      , done :: Bool
                      , description :: String }
-  deriving (Eq, Show, Ord)
+  deriving (Eq, Read, Show, Ord)
 
 -- returns if this TODO is due by the
 -- current time
