@@ -1,8 +1,9 @@
 Usage:
-	getit new <name> <due-by>
-	getit list
-	getit done <name>
+	getit [options] new <name> <due-by>
+	getit [options] list
+	getit [options] done <name>
 
 Options:
 	-h, --help	Show this screen.
 	--version	Show version.
+	--it <list>	Filename for the todo list. [default=./.getit.list]
