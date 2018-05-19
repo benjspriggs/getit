@@ -1,21 +1,22 @@
 module Item where
 import Data.DateTime
 
-data TodoItem = Todo DateTime Bool
+data TodoItem = Todo { date :: DateTime
+                     , done :: Bool
+                     , description :: String }
   deriving (Eq, Show, Ord)
 
 -- returns if this TODO is due by the
 -- current time
 due :: TodoItem -> IO Bool
-due (Todo d _) = do
+due (Todo d _ _) = do
     ct <- getCurrentTime
     return (d <= ct)
 
 -- returns if this TODO is due at a
 -- certain time
 dueBy :: TodoItem -> DateTime -> Bool
-dueBy (Todo d _) t = d <= t
+dueBy (Todo d _ _) t = d <= t
 
--- initializes an empty todo
 todo :: DateTime -> TodoItem
-todo t = Todo t False
+todo d = Todo d False ""

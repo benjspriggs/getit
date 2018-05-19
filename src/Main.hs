@@ -14,6 +14,7 @@ getArgOrExit = getArgOrExitWith patterns
 main :: IO()
 main = do
   args <- parseArgsOrExit patterns =<< getArgs
+
   when (args `isPresent` (command "new")) $ do
     putStrLn "new"
   when (args `isPresent` (command "list")) $ do
