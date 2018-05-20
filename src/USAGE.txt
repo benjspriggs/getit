@@ -1,5 +1,5 @@
 Usage:
-	getit [options] new <name> <due-by>
+	getit [options] new <name> <due-by> [<description>]
 	getit [options] list
 	getit [options] store
 	getit [options] done <name>
@@ -8,3 +8,9 @@ Options:
 	-h, --help	Show this screen.
 	--version	Show version.
 	--it <list>	Filename for the todo list. [default: ./.getit.list]
+	--format <format>		The datetime format to use to parse the due-by date. [default: %Y-%m-%S %T]
+
+Arguments:
+	<name>			The name of the TODO item.
+	<description>		Description for the TODO item.
+	
