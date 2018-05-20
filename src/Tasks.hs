@@ -1,4 +1,6 @@
+{-# LANGUAGE ScopedTypeVariables #-}
 module Tasks where
+import Control.Exception(handle, IOException)
 import Data.Maybe
 import Data.DateTime
 import Data.Tuple.HT
@@ -26,14 +28,17 @@ store path tasks = writeFile path serialized
 -- retrieves tasks from file
 retrieve :: String -> IO (Maybe Tasks)
 retrieve path = do
-  content <- readFile path 
-  let tasks = lines content
-  let readTasks = map readMaybe tasks :: [Maybe TodoItem]
-  return (sequence readTasks)
+  handle (\(e :: IOException) -> return Nothing) $ do
+    content <- readFile path 
+    let tasks = lines content
+    let readTasks = map readMaybe tasks :: [Maybe TodoItem]
+    return (sequence readTasks)
 
+-- retrieves tasks from file, returning
+-- the empty list if that file doesn't exist
+-- or something else happened along the way
 getTasks :: String -> IO Tasks
 getTasks path = do
   maybeTasks <- retrieve path
-  let tasks = fromMaybe [] maybeTasks
-  return tasks
+  return $ fromMaybe [] maybeTasks
 
