@@ -7,6 +7,7 @@ import System.Console.Docopt
 import System.Exit
 import Item
 import Tasks
+import Menu
 
 patterns :: Docopt
 patterns = [docoptFile|src/USAGE.txt|]
@@ -56,7 +57,6 @@ doneCommand args = do
 
   store fn $! newTasks
 
-
 main :: IO()
 main = do
   args <- parseArgsOrExit patterns =<< getArgs
@@ -65,3 +65,4 @@ main = do
   when (args `isPresent` (command "new")) $ newCommand args
   when (args `isPresent` (command "list")) $ listCommand args
   when (args `isPresent` (command "done")) $ doneCommand args
+  when (args `isPresent` (command "menu")) $ getitMenuAction
