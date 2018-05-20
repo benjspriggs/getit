@@ -42,3 +42,6 @@ getTasks path = do
   maybeTasks <- retrieve path
   return $ fromMaybe [] maybeTasks
 
+finish :: String -> Tasks -> Tasks
+finish finished [] = []
+finish finished (t:ts) = if name t == finished then (completeTodo t):ts else (t:ts)

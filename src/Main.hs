@@ -44,11 +44,18 @@ listCommand args = do
   putStrLn "list"
   
   tasks <- getTasks fn
-  putStrLn (show tasks)
+  putStrLn $ unlines $ map show tasks
 
 doneCommand args = do
-  fn <- getArgOrExit args (longOption "it")
   putStrLn "done"
+  fn <- getArgOrExit args (longOption "it")
+  name <- getArgOrExit args (argument "name")
+
+  tasks <- getTasks fn
+  let newTasks = finish name tasks
+
+  store fn $! newTasks
+
 
 main :: IO()
 main = do

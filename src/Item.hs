@@ -21,3 +21,7 @@ dueBy (Todo d _ _ _) t = d <= t
 
 todo :: DateTime -> TodoItem
 todo d = Todo d False "" ""
+
+completeTodo :: TodoItem -> TodoItem
+completeTodo (Todo _date _done _name _desc) = Todo _date True _name _desc
+completeTodo x = x
