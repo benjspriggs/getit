@@ -13,7 +13,7 @@ getitMenu = menu choices text
 
 getitMenuAction :: IO (Maybe (Choice Text))
 getitMenuAction = do
-  let prompt = text "Which action? "
+  let prompt = "Which action? "
 
   choice <- runByline $ askWithMenu getitMenu prompt
   return choice
