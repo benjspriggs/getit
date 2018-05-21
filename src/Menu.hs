@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Menu where
 import Data.Text(Text, pack)
 import System.Console.Byline
@@ -7,12 +8,12 @@ import System.Console.Byline
 -- existing TODOs
 -- getitMenu :: IO ()
 getitMenu :: Menu Text
-getitMenu = menu choices stylize
-  where choices = map pack ["a", "b", "c"] :: [Text]
-        stylize :: Text -> Stylized
-        stylize t = text t
+getitMenu = menu choices text
+  where choices = map pack ["a", "b", "c"]
 
 getitMenuAction :: IO (Maybe (Choice Text))
 getitMenuAction = do
-  choice <- runByline $ askWithMenu getitMenu (text (pack "getit"))
+  let prompt = text "Which action? "
+
+  choice <- runByline $ askWithMenu getitMenu prompt
   return choice
