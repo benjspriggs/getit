@@ -65,4 +65,4 @@ main = do
   when (args `isPresent` (command "new")) $ newCommand args
   when (args `isPresent` (command "list")) $ listCommand args
   when (args `isPresent` (command "done")) $ doneCommand args
-  when (args `isPresent` (command "menu")) $ getitMenuAction
+  when (args `isPresent` (command "menu")) $ void $ getitMenuAction

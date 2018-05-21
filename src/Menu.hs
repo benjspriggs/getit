@@ -1,5 +1,5 @@
 module Menu where
-import Data.Text(Text, unpack)
+import Data.Text(Text, pack)
 import System.Console.Byline
 
 
@@ -8,10 +8,11 @@ import System.Console.Byline
 -- getitMenu :: IO ()
 getitMenu :: Menu Text
 getitMenu = menu choices stylize
-  where choices = map unpack ["a", "b", "c"] :: [Text]
+  where choices = map pack ["a", "b", "c"] :: [Text]
         stylize :: Text -> Stylized
-        stylize t = text (pack t) <> (" (choice)" <> fg blue)
+        stylize t = text t
 
-getitMenuAction :: IO Text
+getitMenuAction :: IO (Maybe (Choice Text))
 getitMenuAction = do
-  return $ runByline $ askWithMenu getitMenu "getit"
+  choice <- runByline $ askWithMenu getitMenu (text (pack "getit"))
+  return choice
