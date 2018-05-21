@@ -65,7 +65,9 @@ executable getit
                        docopt >= 0.7.0.5,
                        utility-ht >= 0.0.14,
                        text >= 1.2.3.0,
-                       time >= 1.6.0.1
+                       time >= 1.6.0.1,
+                       mtl >= 2.2.2
+
   
   -- Directories containing source files.
   hs-source-dirs:      src

@@ -13,6 +13,17 @@ patterns = [docoptFile|src/USAGE.txt|]
 
 getArgOrExit = getArgOrExitWith patterns
 
+withGetitFile fn actions = do
+  putStrLn $ "Retrieving from " ++ fn
+  tasks <- getTasks fn
+
+  newTasks <- msum actions tasks
+  store fn $! newTasks
+  putStrLn $ "Saved to " ++ fn
+
+  return ()
+
+
 storeCommand args = do
   fn <- getArgOrExit args (longOption "it")
   putStrLn "store"
