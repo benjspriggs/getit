@@ -1,11 +1,13 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Tasks where
+import Prelude hiding (readFile)
 import Control.Exception(handle, IOException)
 import Control.Monad.State
 import Data.Maybe
 import Data.DateTime
 import Data.Tuple.HT
 import Text.Read(readMaybe)
+import System.IO.Strict(readFile)
 import Item
 
 type Tasks = [TodoItem]
