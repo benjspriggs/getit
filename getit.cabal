@@ -67,8 +67,8 @@ executable getit
                        text >= 1.2.3.0,
                        time >= 1.6.0.1,
                        mtl >= 2.2.2,
-                       strict >= 0.3.2
-                       byline >= 0.3.1.0,
+                       strict >= 0.3.2,
+                       byline >= 0.3.1.0
   
   -- Directories containing source files.
   hs-source-dirs:      src
