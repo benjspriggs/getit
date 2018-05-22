@@ -2,6 +2,7 @@ Usage:
 	getit new [options] <name> <due-by> [<description>]
 	getit list [options]
 	getit store [options]
+	getit menu [options]
 	getit done [options] <name>
 
 Options:
