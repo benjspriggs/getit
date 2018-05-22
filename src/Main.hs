@@ -61,14 +61,18 @@ main = do
     when (args `isPresent` (command "task")) $ do
       parsedDueBy <- couldBeADate "due-by"
 
-      withGetitFile fn $ addTodo $ Todo parsedDueBy False name desc
+      let newTodo = Todo parsedDueBy False name desc
+
+      withGetitFile fn $ addTodo newTodo
 
     -- new event
     when (args `isPresent` (command "event")) $ do
       parsedStart <- couldBeADate "start"
       parsedEnd <- couldBeADate "end"
 
-      withGetitFile fn $ addTodo $ Event parsedStart parsedEnd False name desc
+      let newDate = Event parsedStart parsedEnd False name desc
+
+      withGetitFile fn $ addTodo newDate
 
   when (args `isPresent` (command "list")) $ do
     tasks <- getTasks fn
