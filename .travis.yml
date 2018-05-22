@@ -2,7 +2,8 @@ language: haskell
 sudo: true
 ghc:
   - "8.0"
-
+install:
+  - cabal install
 script:
   - cabal exec getit list
   - cabal exec getit store
