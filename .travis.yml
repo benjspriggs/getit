@@ -1,9 +1,7 @@
 language: haskell
 sudo: true
 ghc:
-  - "7.10"
-  - "7.8"
-  - "7.6"
+  - "8.0"
 
 script:
   - cabal exec getit list
