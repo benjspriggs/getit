@@ -12,6 +12,12 @@ data TodoItem = Todo { date :: Maybe DateTime
                      , description :: Maybe String }
   deriving (Eq, Read, Show, Ord)
 
+before :: DateTime -> DateTime -> Bool
+(before) = (<=)
+
+after :: DateTime -> DateTime -> Bool
+(after) = (>=)
+
 -- returns if this TODO is due by the
 -- current time
 due :: TodoItem -> IO (Maybe Bool)

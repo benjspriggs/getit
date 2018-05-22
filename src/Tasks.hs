@@ -63,3 +63,10 @@ removeFinishedTodos :: State Tasks Tasks
 removeFinishedTodos = do
   ts <- get
   return $ filter (not . done) ts
+
+within :: DateTime -> (Maybe DateTime, Maybe DateTime) -> Bool
+within t range = case range of
+  (Nothing, Nothing) -> False
+  (Just _startDate, Just _endDate) -> t `after` _startDate && t `before` _endDate
+  (Just _startDate, Nothing) ->  t `after`_startDate
+  (Nothing, Just _endDate) -> t `before` _endDate
