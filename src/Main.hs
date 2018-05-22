@@ -48,7 +48,7 @@ main = do
     let desc = getArgWithDefault args "" (argument "description")
     let parsedDueBy = parseTimeOrError True defaultTimeLocale fmt taskDueBy
 
-    withGetitFile fn $ addTodo $ Todo parsedDueBy False name desc
+    withGetitFile fn $ addTodo $ Todo (Just parsedDueBy) False name desc
 
   when (args `isPresent` (command "list")) $ do
     putStrLn "list"

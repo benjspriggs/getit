@@ -12,10 +12,10 @@ type Tasks = [TodoItem]
 
 -- gets the current status of
 -- a number of todo items
-status :: Tasks -> IO [Bool]
+status :: Tasks -> IO [(TodoItem, Bool)]
 status ts = do
     ct <- getCurrentTime
-    return $ map (\t -> dueBy t ct) ts
+    return $ zip ts (catMaybes $ map (dueBy ct) ts)
 
 -- sample task list
 sample :: Tasks
