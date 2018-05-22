@@ -41,14 +41,14 @@ main = do
     putStrLn "new task"
 
     name <- getArgOrExit args (argument "name")
-    taskDueBy <- getArgOrExit args (argument "due-by")
+    let taskDueBy = getArg args (argument "due-by")
     fmt <- getArgOrExit args (longOption "format")
-    putStrLn $ "Formatting '" ++ taskDueBy ++ "' according to " ++ fmt
+    putStrLn $ "Formatting '" ++ (show taskDueBy) ++ "' according to " ++ fmt
 
-    let desc = getArgWithDefault args "" (argument "description")
-    let parsedDueBy = parseTimeOrError True defaultTimeLocale fmt taskDueBy
+    let desc = getArg args (argument "description")
+    let parsedDueBy = fmap (parseTimeOrError True defaultTimeLocale fmt) taskDueBy
 
-    withGetitFile fn $ addTodo $ Todo (Just parsedDueBy) False name desc
+    withGetitFile fn $ addTodo $ Todo parsedDueBy False name desc
 
   when (args `isPresent` (command "list")) $ do
     putStrLn "list"

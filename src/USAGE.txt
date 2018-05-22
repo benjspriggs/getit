@@ -1,5 +1,6 @@
 Usage:
-	getit new [options] <name> <due-by> [<description>]
+	getit new task [options] <name> [<due-by>] [<description>]
+	getit new event [options] <name> [<start>] [<end>] [<description>]
 	getit list [options]
 	getit store [options]
 	getit done [options] <name>

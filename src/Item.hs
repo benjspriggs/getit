@@ -4,12 +4,12 @@ import Data.DateTime
 data TodoItem = Todo { date :: Maybe DateTime
                      , done :: Bool
                      , name :: String
-                     , description :: String } |
+                     , description :: Maybe String } |
                 Event { startDate :: Maybe DateTime
                      , endDate   :: Maybe DateTime
                      , done      :: Bool
                      , name      :: String
-                     , description :: String }
+                     , description :: Maybe String }
   deriving (Eq, Read, Show, Ord)
 
 -- returns if this TODO is due by the
@@ -25,7 +25,7 @@ dueBy :: DateTime -> TodoItem -> Maybe Bool
 dueBy t (Todo d _ _ _) = fmap (<=t) d
 
 todo :: DateTime -> TodoItem
-todo d = Todo (Just d) False "" ""
+todo d = Todo (Just d) False "" Nothing
 
 completeTodo :: TodoItem -> TodoItem
 completeTodo (Todo _date _done _name _desc) = 
