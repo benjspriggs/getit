@@ -72,7 +72,8 @@ main = do
 
   when (args `isPresent` (command "list")) $ do
     tasks <- getTasks fn
-    putStr $ unlines $ map show tasks
+    ct <- getCurrentTime
+    putStr $ unlines $ map pretty $ zip (map (dueBy ct) tasks) tasks
 
   when (args `isPresent` (command "done")) $ do
     name <- getArgOrExit args (argument "name")
