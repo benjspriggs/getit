@@ -1,4 +1,10 @@
+language: haskell
 ghc:
   - "7.10"
   - "7.8"
   - "7.6"
+
+script:
+  - cabal exec getit list
+  - cabal exec getit store
+  - cabal exec getit list
