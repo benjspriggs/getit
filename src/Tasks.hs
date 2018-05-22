@@ -1,6 +1,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Tasks where
 import Control.Exception(handle, IOException)
+import Control.Monad.State
 import Data.Maybe
 import Data.DateTime
 import Data.Tuple.HT
@@ -31,7 +32,7 @@ retrieve path = do
   handle (\(e :: IOException) -> return Nothing) $ do
     content <- readFile path 
     let tasks = lines content
-    let readTasks = map readMaybe tasks :: [Maybe TodoItem]
+    let readTasks = map readMaybe tasks :: [Maybe TodoItem] 
     return (sequence readTasks)
 
 -- retrieves tasks from file, returning
@@ -45,3 +46,18 @@ getTasks path = do
 finish :: String -> Tasks -> Tasks
 finish finished [] = []
 finish finished (t:ts) = if name t == finished then (completeTodo t):ts else (t:ts)
+
+addTodo :: TodoItem -> State Tasks Tasks
+addTodo item = do
+  ts <- get
+  return (item:ts)
+
+finishTodo :: String -> State Tasks Tasks
+finishTodo n = do
+  ts <- get
+  return $ finish n ts
+
+removeFinishedTodos :: State Tasks Tasks
+removeFinishedTodos = do
+  ts <- get
+  return $ filter (not . done) ts

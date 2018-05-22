@@ -2,6 +2,7 @@
 import Data.DateTime
 import Data.Time.Format
 import Control.Monad
+import Control.Monad.State
 import System.Environment
 import System.Console.Docopt
 import System.Exit
@@ -13,55 +14,49 @@ patterns = [docoptFile|src/USAGE.txt|]
 
 getArgOrExit = getArgOrExitWith patterns
 
-storeCommand args = do
-  fn <- getArgOrExit args (longOption "it")
-  putStrLn "store"
-  store fn sample
-  
-  putStrLn ("Saved to " ++ fn)
-
-newCommand args = do
-  putStrLn "new task"
-  fn <- getArgOrExit args (longOption "it")
-
-  name <- getArgOrExit args (argument "name")
-  taskDueBy <- getArgOrExit args (argument "due-by")
-  fmt <- getArgOrExit args (longOption "format")
-  putStrLn $ "Formatting '" ++ taskDueBy ++ "' according to " ++ fmt
-
-  let desc = getArgWithDefault args "" (argument "description")
-  let parsedDueBy = parseTimeOrError True defaultTimeLocale fmt taskDueBy
-
-
+withGetitFile :: String -> State Tasks Tasks -> IO ()
+withGetitFile fn action = do
+  putStrLn $ "Retrieving from " ++ fn
   tasks <- getTasks fn
-  let newTasks = tasks ++ [Todo parsedDueBy False name desc]
+
+  let onTasks  = runState action tasks
+  let newTasks = fst onTasks
+
   store fn $! newTasks
+  putStrLn $ "Saved to " ++ fn
 
   return ()
-
-listCommand args = do
-  fn <- getArgOrExit args (longOption "it")
-  putStrLn "list"
-  
-  tasks <- getTasks fn
-  putStrLn $ unlines $ map show tasks
-
-doneCommand args = do
-  putStrLn "done"
-  fn <- getArgOrExit args (longOption "it")
-  name <- getArgOrExit args (argument "name")
-
-  tasks <- getTasks fn
-  let newTasks = finish name tasks
-
-  store fn $! newTasks
-
 
 main :: IO()
 main = do
   args <- parseArgsOrExit patterns =<< getArgs
+  fn <- getArgOrExit args (longOption "it")
 
-  when (args `isPresent` (command "store")) $ storeCommand args
-  when (args `isPresent` (command "new")) $ newCommand args
-  when (args `isPresent` (command "list")) $ listCommand args
-  when (args `isPresent` (command "done")) $ doneCommand args
+  when (args `isPresent` (command "store")) $ do
+    putStrLn "store"
+    withGetitFile fn $ do
+      return sample
+
+  when (args `isPresent` (command "new")) $ do
+    putStrLn "new task"
+
+    name <- getArgOrExit args (argument "name")
+    taskDueBy <- getArgOrExit args (argument "due-by")
+    fmt <- getArgOrExit args (longOption "format")
+    putStrLn $ "Formatting '" ++ taskDueBy ++ "' according to " ++ fmt
+
+    let desc = getArgWithDefault args "" (argument "description")
+    let parsedDueBy = parseTimeOrError True defaultTimeLocale fmt taskDueBy
+
+    withGetitFile fn $ addTodo $ Todo parsedDueBy False name desc
+
+  when (args `isPresent` (command "list")) $ do
+    putStrLn "list"
+    tasks <- getTasks fn
+    putStrLn $ unlines $ map show tasks
+
+  when (args `isPresent` (command "done")) $ do
+    putStrLn "done"
+    name <- getArgOrExit args (argument "name")
+
+    withGetitFile fn $ finishTodo name
