@@ -1,9 +1,9 @@
 Usage:
-	getit [options] new <name> <due-by> [<description>]
-	getit [options] list
-	getit [options] store
-	getit [options] menu
-	getit [options] done <name>
+	getit new [options] <name> <due-by> [<description>]
+	getit list [options]
+	getit store [options]
+	getit menu [options]
+	getit done [options] <name>
 
 Options:
 	-h, --help	Show this screen.
