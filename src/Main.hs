@@ -28,36 +28,58 @@ withGetitFile fn action = do
 
   return ()
 
+_couldBeADate args fmt _parse option = do
+  let mightBeDate = getArg args (argument option)
+  putStrLn $ "Formatting '" ++ (show mightBeDate) ++ "' according to " ++ fmt
+
+  let parsedDate = fmap _parse mightBeDate
+  return parsedDate
+
 main :: IO()
 main = do
   args <- parseArgsOrExit patterns =<< getArgs
-  fn <- getArgOrExit args (longOption "it")
 
+  -- get the user's tasks and events
+  fn <- getArgOrExit args (longOption "it")
+  -- the date format string for everything passed
+  fmt <- getArgOrExit args (longOption "format")
+
+  let parseWithFormatString = parseTimeOrError True defaultTimeLocale fmt
+  let couldBeADate = _couldBeADate args fmt parseWithFormatString
+
+  -- store some sample tasks and events
   when (args `isPresent` (command "store")) $ do
-    putStrLn "store"
     withGetitFile fn $ do
       return sample
 
+  -- create a new thing
   when (args `isPresent` (command "new")) $ do
-    putStrLn "new task"
-
     name <- getArgOrExit args (argument "name")
-    taskDueBy <- getArgOrExit args (argument "due-by")
-    fmt <- getArgOrExit args (longOption "format")
-    putStrLn $ "Formatting '" ++ taskDueBy ++ "' according to " ++ fmt
+    let desc = getArg args (argument "description")
 
-    let desc = getArgWithDefault args "" (argument "description")
-    let parsedDueBy = parseTimeOrError True defaultTimeLocale fmt taskDueBy
+    -- new task
+    when (args `isPresent` (command "task")) $ do
+      parsedDueBy <- couldBeADate "due-by"
 
-    withGetitFile fn $ addTodo $ Todo parsedDueBy False name desc
+      let newTodo = Todo parsedDueBy False name desc
+
+      withGetitFile fn $ addTodo newTodo
+
+    -- new event
+    when (args `isPresent` (command "event")) $ do
+      parsedStart <- couldBeADate "start"
+      parsedEnd <- couldBeADate "end"
+
+      let newDate = Event parsedStart parsedEnd False name desc
+
+      withGetitFile fn $ addTodo newDate
 
   when (args `isPresent` (command "list")) $ do
-    putStrLn "list"
     tasks <- getTasks fn
-    putStrLn $ unlines $ map show tasks
+    ct <- getCurrentTime
+    putStr $ unlines $ map pretty $ zip (map (dueBy ct) tasks) tasks
 
   when (args `isPresent` (command "done")) $ do
-    putStrLn "done"
     name <- getArgOrExit args (argument "name")
 
     withGetitFile fn $ finishTodo name

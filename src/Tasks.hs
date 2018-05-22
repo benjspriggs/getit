@@ -1,21 +1,23 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Tasks where
+import Prelude hiding (readFile)
 import Control.Exception(handle, IOException)
 import Control.Monad.State
 import Data.Maybe
 import Data.DateTime
 import Data.Tuple.HT
 import Text.Read(readMaybe)
+import System.IO.Strict(readFile)
 import Item
 
 type Tasks = [TodoItem]
 
 -- gets the current status of
 -- a number of todo items
-status :: Tasks -> IO [Bool]
+status :: Tasks -> IO [(TodoItem, Bool)]
 status ts = do
     ct <- getCurrentTime
-    return $ map (\t -> dueBy t ct) ts
+    return $ zip ts (catMaybes $ map (dueBy ct) ts)
 
 -- sample task list
 sample :: Tasks
@@ -61,3 +63,10 @@ removeFinishedTodos :: State Tasks Tasks
 removeFinishedTodos = do
   ts <- get
   return $ filter (not . done) ts
+
+within :: DateTime -> (Maybe DateTime, Maybe DateTime) -> Bool
+within t range = case range of
+  (Nothing, Nothing) -> False
+  (Just _startDate, Just _endDate) -> t `after` _startDate && t `before` _endDate
+  (Just _startDate, Nothing) ->  t `after`_startDate
+  (Nothing, Just _endDate) -> t `before` _endDate
