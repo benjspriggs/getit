@@ -1,12 +1,16 @@
-language: haskell
+language: generic
 sudo: false
-ghc:
-  - "8.0"
-  - "8.1"
-  - "8.2"
+
+# Ensure necessary system libraries are present
+addons:
+  apt:
+    packages:
+      - libgmp-dev
+
 cache:
   directories:
     - $HOME/.stack
+
 before_install:
   # Download and unpack the stack executable
   - mkdir -p ~/.local/bin
