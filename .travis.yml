@@ -1,10 +1,22 @@
 language: haskell
-sudo: true
+sudo: false
 ghc:
   - "8.0"
+  - "8.1"
+  - "8.2"
+cache:
+  directories:
+    - $HOME/.stack
+before_install:
+  # Download and unpack the stack executable
+  - mkdir -p ~/.local/bin
+  - export PATH=$HOME/.local/bin:$PATH
+  - travis_retry curl -L https://get.haskellstack.org/stable/linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
+  - stack config set system-ghc --global true
+  - export PATH=/opt/ghc/7.10.2/bin:$PATH
 install:
-  - cabal install
+  - stack install getit
 script:
-  - cabal exec getit list
-  - cabal exec getit store
-  - cabal exec getit list
+  - stack exec getit list
+  - stack exec getit store
+  - stack exec getit list
