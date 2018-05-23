@@ -15,7 +15,7 @@ before_install:
   - stack config set system-ghc --global true
   - export PATH=/opt/ghc/7.10.2/bin:$PATH
 install:
-  - stack install getit
+  - stack install
 script:
   - stack exec getit list
   - stack exec getit store
