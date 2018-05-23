@@ -1,0 +1,5 @@
+flags: {}
+extra-deps:
+- byline-0.3.1.0
+- terminfo-hs-0.2.1
+resolver: lts-11.10
