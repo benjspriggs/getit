@@ -1,6 +1,8 @@
 {-# LANGUAGE QuasiQuotes #-}
-import Data.DateTime
+import Data.Time
 import Data.Time.Format
+import Data.Time.Clock
+import Data.Maybe
 import Control.Monad
 import Control.Monad.State
 import System.Environment
@@ -85,3 +87,16 @@ main = do
     withGetitFile fn $ finishTodo name
 
   when (args `isPresent` (command "menu")) $ void $ getitMenuAction
+
+  when (args `isPresent` (command "soon")) $ do
+    ct <- getCurrentTime
+    parsedWaterMark <- couldBeADate "watermark"
+    let day = secondsToDiffTime $ 24 * 60 * 60
+    let waterMark = fromMaybe (addUTCTime day ct) parsedWaterMark
+
+    withGetitFile fn $ do
+      tasks <- get
+      let soonTasks = filter (<0) $ map (remaining waterMark) $ tasks
+
+      putStr $ unlines $ map pretty $ zip (map (dueBy ct) tasks) tasks
+      return tasks

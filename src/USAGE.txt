@@ -5,6 +5,7 @@ Usage:
 	getit store [options]
 	getit menu [options]
 	getit done [options] <name>
+	getit soon [options] [<watermark>]
 
 Options:
 	-h, --help	Show this screen.
@@ -15,4 +16,5 @@ Options:
 Arguments:
 	<name>			The name of the TODO item.
 	<description>		Description for the TODO item.
+	<watermark>		What time to use as the watermark for 'soon'. Defaults to one day past current system time.
 	
