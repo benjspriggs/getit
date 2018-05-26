@@ -31,8 +31,8 @@ dueBy :: UTCTime -> TodoItem -> Maybe Bool
 dueBy t (Todo d _ _ _) = fmap (<=t) d
 dueBy t (Event _ endDate _ _ _) = fmap (<=t) endDate
 
-todo :: UTCTime -> TodoItem
-todo d = Todo (Just d) False "" Nothing
+todo :: Day -> TodoItem
+todo d = Todo (Just $ UTCTime d $ secondsToDiffTime 0) False "" Nothing
 
 -- returns an identical todo that's done
 completeTodo :: TodoItem -> TodoItem

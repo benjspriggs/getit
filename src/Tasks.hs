@@ -3,8 +3,8 @@ module Tasks where
 import Prelude hiding (readFile)
 import Control.Exception(handle, IOException)
 import Control.Monad.State
+import Data.Time(UTCTime,getCurrentTime,fromGregorian)
 import Data.Maybe
-import Data.DateTime
 import Data.Tuple.HT
 import Text.Read(readMaybe)
 import System.IO.Strict(readFile)
@@ -21,7 +21,7 @@ status ts = do
 
 -- sample task list
 sample :: Tasks
-sample = map todo $ map (uncurry3 fromGregorian') [(2017, 2, 3), (2018, 3,2), (2019, 3,2)]
+sample = map todo $ map (uncurry3 fromGregorian) [(2017, 2, 3), (2018, 3,2), (2019, 3,2)]
 
 -- stores tasks in file
 store :: String -> Tasks -> IO ()
@@ -64,7 +64,7 @@ removeFinishedTodos = do
   ts <- get
   return $ filter (not . done) ts
 
-within :: DateTime -> (Maybe DateTime, Maybe DateTime) -> Bool
+within :: UTCTime -> (Maybe UTCTime, Maybe UTCTime) -> Bool
 within t range = case range of
   (Nothing, Nothing) -> False
   (Just _startDate, Just _endDate) -> t `after` _startDate && t `before` _endDate

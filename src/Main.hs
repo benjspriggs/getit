@@ -91,12 +91,11 @@ main = do
   when (args `isPresent` (command "soon")) $ do
     ct <- getCurrentTime
     parsedWaterMark <- couldBeADate "watermark"
-    let day = secondsToDiffTime $ 24 * 60 * 60
-    let waterMark = fromMaybe (addUTCTime day ct) parsedWaterMark
+    let waterMark = fromMaybe (addUTCTime nominalDay ct) parsedWaterMark
 
-    withGetitFile fn $ do
-      tasks <- get
-      let soonTasks = filter (<0) $ map (remaining waterMark) $ tasks
+    tasks <- getTasks fn
+    let isDueSoon t = t < 0
+    let soonTasks = filter isDueSoon $ catMaybes $ map (remaining waterMark) $ tasks
+    let prettied = unlines $ map pretty $ zip (map (dueBy ct) tasks) tasks
 
-      putStr $ unlines $ map pretty $ zip (map (dueBy ct) tasks) tasks
-      return tasks
+    putStr prettied
