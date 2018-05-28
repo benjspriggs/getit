@@ -70,3 +70,17 @@ within t range = case range of
   (Just _startDate, Just _endDate) -> t `after` _startDate && t `before` _endDate
   (Just _startDate, Nothing) ->  t `after`_startDate
   (Nothing, Just _endDate) -> t `before` _endDate
+
+withGetitFile :: String -> State Tasks Tasks -> IO ()
+withGetitFile fn action = do
+  putStrLn $ "Retrieving from " ++ fn
+  tasks <- getTasks fn
+
+  let onTasks  = runState action tasks
+  let newTasks = fst onTasks
+
+  store fn $! newTasks
+  putStrLn $ "Saved to " ++ fn
+
+  return ()
+

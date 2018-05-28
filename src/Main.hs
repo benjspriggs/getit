@@ -17,25 +17,11 @@ patterns = [docoptFile|src/USAGE.txt|]
 
 getArgOrExit = getArgOrExitWith patterns
 
-withGetitFile :: String -> State Tasks Tasks -> IO ()
-withGetitFile fn action = do
-  putStrLn $ "Retrieving from " ++ fn
-  tasks <- getTasks fn
-
-  let onTasks  = runState action tasks
-  let newTasks = fst onTasks
-
-  store fn $! newTasks
-  putStrLn $ "Saved to " ++ fn
-
-  return ()
-
-_couldBeADate args fmt _parse option = do
+couldBeDateFromArgs args fmt parseDate option = do
   let mightBeDate = getArg args (argument option)
   putStrLn $ "Formatting '" ++ (show mightBeDate) ++ "' according to " ++ fmt
 
-  let parsedDate = fmap _parse mightBeDate
-  return parsedDate
+  return $ parseDate <$> mightBeDate
 
 main :: IO()
 main = do
@@ -47,7 +33,7 @@ main = do
   fmt <- getArgOrExit args (longOption "format")
 
   let parseWithFormatString = parseTimeOrError True defaultTimeLocale fmt
-  let couldBeADate = _couldBeADate args fmt parseWithFormatString
+  let couldBeADate = couldBeDateFromArgs args fmt parseWithFormatString
 
   -- store some sample tasks and events
   when (args `isPresent` (command "store")) $ do
