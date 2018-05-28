@@ -10,7 +10,6 @@ import System.Console.Docopt
 import System.Exit
 import Item
 import Tasks
-import Menu
 
 patterns :: Docopt
 patterns = [docoptFile|src/USAGE.txt|]
@@ -65,8 +64,6 @@ main = do
     name <- getArgOrExit args (argument "name")
 
     withGetitFile fn $ finishTodo name
-
-  when (args `isPresent` (command "menu")) $ void $ getitMenuAction
 
   when (args `isPresent` (command "soon")) $ do
     ct <- getCurrentTime

@@ -1,6 +1,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Tasks where
 import Prelude hiding (readFile)
+import System.Console.Docopt(getArg,argument)
 import Control.Exception(handle, IOException)
 import Control.Monad.State
 import Data.Time(UTCTime,getCurrentTime,fromGregorian)

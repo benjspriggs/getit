@@ -3,7 +3,6 @@ Usage:
 	getit new event [options] <name> [<start>] [<end>] [<description>]
 	getit list [options]
 	getit store [options]
-	getit menu [options]
 	getit done [options] <name>
 	getit soon [options] [<watermark>]
 
