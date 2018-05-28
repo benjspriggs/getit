@@ -96,4 +96,4 @@ main = do
     tasks <- getTasks fn
     let soonTasks = filter (\t -> 0 >= (fromMaybe 0 $ remaining waterMark t)) tasks
 
-    putStrLn $ pretty "due" (dueBy waterMark) soonTasks
+    putStrLn $ pretty "done" (\t -> Just $ done t) soonTasks
