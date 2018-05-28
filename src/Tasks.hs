@@ -52,7 +52,8 @@ finish finished (t:ts) = if name t == finished then (completeTodo t):ts else (t:
 addTodo :: TodoItem -> State Tasks Tasks
 addTodo item = do
   ts <- get
-  return (item:ts)
+  let newTasks = (item:ts)
+  return newTasks
 
 finishTodo :: String -> State Tasks Tasks
 finishTodo n = do
