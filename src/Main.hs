@@ -94,7 +94,6 @@ main = do
     let waterMark = fromMaybe (addUTCTime nominalDay ct) parsedWaterMark
 
     tasks <- getTasks fn
-    let isDueSoon t = t < 0
-    let soonTasks = filter isDueSoon $ catMaybes $ map (remaining waterMark) $ tasks
+    let soonTasks = filter (\t -> 0 >= (fromMaybe 0 $ remaining waterMark t)) tasks
 
-    putStrLn $ pretty "due" (dueBy waterMark) tasks
+    putStrLn $ pretty "due" (dueBy waterMark) soonTasks
