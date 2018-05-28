@@ -79,7 +79,7 @@ main = do
   when (args `isPresent` (command "list")) $ do
     tasks <- getTasks fn
     ct <- getCurrentTime
-    putStr $ unlines $ map pretty $ zip (map (dueBy ct) tasks) tasks
+    putStrLn $ pretty "due" (dueBy ct) tasks
 
   when (args `isPresent` (command "done")) $ do
     name <- getArgOrExit args (argument "name")
@@ -96,6 +96,5 @@ main = do
     tasks <- getTasks fn
     let isDueSoon t = t < 0
     let soonTasks = filter isDueSoon $ catMaybes $ map (remaining waterMark) $ tasks
-    let prettied = unlines $ map pretty $ zip (map (dueBy ct) tasks) tasks
 
-    putStr prettied
+    putStrLn $ pretty "due" (dueBy ct) tasks

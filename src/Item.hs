@@ -1,15 +1,16 @@
 module Item where
 import Data.Time
+import Data.List(intercalate)
 
 data TodoItem = Todo { date :: Maybe UTCTime
-                     , done :: Bool
-                     , name :: String
-                     , description :: Maybe String } |
-                Event { startDate :: Maybe UTCTime
-                     , endDate   :: Maybe UTCTime
-                     , done      :: Bool
-                     , name      :: String
-                     , description :: Maybe String }
+         , done :: Bool
+         , name :: String
+         , description :: Maybe String } |
+    Event { startDate :: Maybe UTCTime
+         , endDate   :: Maybe UTCTime
+         , done      :: Bool
+         , name      :: String
+         , description :: Maybe String }
   deriving (Eq, Read, Show, Ord)
 
 before :: UTCTime -> UTCTime -> Bool
@@ -41,12 +42,29 @@ completeTodo (Todo _date _done _name _desc) =
 completeTodo (Event _startDate _endDate _done _name _desc) = 
   Event _startDate _endDate True _name _desc
 
-prettyWithFormatting :: String -> String -> (Maybe Bool, TodoItem) -> String
-prettyWithFormatting ding nope (maybeDone, todoItem) = case maybeDone of
-    Nothing     -> "\t" ++ (show todoItem)
-    Just isDone -> (if isDone then ding else nope) ++ "\t" ++ (show todoItem)
+data Formatter = TodoFormat { heading :: String
+                 , ding :: String
+                 , nope :: String
+                 , isIt :: TodoItem -> Maybe Bool }
 
-pretty = prettyWithFormatting "✔" "✗"
+conditionalColumns :: [Formatter] -> [TodoItem] -> String
+conditionalColumns fmts ts = (separated "\t" headers) ++ "item\n" ++ intercalate "\n" rows
+  where separated ch xs = (intercalate ch xs) ++ ch
+        headers = map heading fmts
+        rows = map columnFor ts
+        columnFor t = separated "\t" $ map (formatColumn t) fmts
+        formatColumn t fmt = pre ++ "\t" ++ show t
+            where pre = case (isIt fmt t) of
+                          Nothing -> ""
+                          Just success -> if success then ding fmt else nope fmt
+
+prettyWithFormatting :: String -> String -> (Maybe Bool, TodoItem) -> String
+prettyWithFormatting ding nope (maybeSuccess, todoItem) = case maybeSuccess of
+    Nothing     -> "\t" ++ (show todoItem)
+    Just isSuccess -> (if isSuccess then ding else nope) ++ "\t" ++ (show todoItem)
+
+pretty :: String -> (TodoItem -> Maybe Bool) -> [TodoItem] -> String
+pretty name f = conditionalColumns [TodoFormat name "✔" "✗" f]
 
 remaining :: UTCTime -> TodoItem -> Maybe NominalDiffTime
 remaining t (Todo d _ _ _) = (flip diffUTCTime) t <$> d
