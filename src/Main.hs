@@ -17,12 +17,6 @@ patterns = [docoptFile|src/USAGE.txt|]
 
 getArgOrExit = getArgOrExitWith patterns
 
-couldBeDateFromArgs args fmt parseDate option = do
-  let mightBeDate = getArg args (argument option)
-  putStrLn $ "Formatting '" ++ (show mightBeDate) ++ "' according to " ++ fmt
-
-  return $ parseDate <$> mightBeDate
-
 main :: IO()
 main = do
   args <- parseArgsOrExit patterns =<< getArgs

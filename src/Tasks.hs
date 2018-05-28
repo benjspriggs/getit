@@ -45,6 +45,7 @@ getTasks path = do
   maybeTasks <- retrieve path
   return $ fromMaybe [] maybeTasks
 
+-- marks a TODO as finished
 finish :: String -> Tasks -> Tasks
 finish finished [] = []
 finish finished (t:ts) = if name t == finished then (completeTodo t):ts else (t:ts)
@@ -83,4 +84,10 @@ withGetitFile fn action = do
   putStrLn $ "Saved to " ++ fn
 
   return ()
+
+couldBeDateFromArgs args fmt parseDate option = do
+  let mightBeDate = getArg args (argument option)
+  putStrLn $ "Formatting '" ++ (show mightBeDate) ++ "' according to " ++ fmt
+
+  return $ parseDate <$> mightBeDate
 
