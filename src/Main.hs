@@ -97,4 +97,4 @@ main = do
     let isDueSoon t = t < 0
     let soonTasks = filter isDueSoon $ catMaybes $ map (remaining waterMark) $ tasks
 
-    putStrLn $ pretty "due" (dueBy ct) tasks
+    putStrLn $ pretty "due" (dueBy waterMark) tasks
