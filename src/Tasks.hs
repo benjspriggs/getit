@@ -1,6 +1,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Tasks where
 import Prelude hiding (readFile)
+import System.Console.Docopt(getArg,argument)
 import Control.Exception(handle, IOException)
 import Control.Monad.State
 import Data.Time(UTCTime,getCurrentTime,fromGregorian)
@@ -45,6 +46,7 @@ getTasks path = do
   maybeTasks <- retrieve path
   return $ fromMaybe [] maybeTasks
 
+-- marks a TODO as finished
 finish :: String -> Tasks -> Tasks
 finish finished [] = []
 finish finished (t:ts) = if name t == finished then (completeTodo t):ts else (t:ts)
@@ -71,3 +73,23 @@ within t range = case range of
   (Just _startDate, Just _endDate) -> t `after` _startDate && t `before` _endDate
   (Just _startDate, Nothing) ->  t `after`_startDate
   (Nothing, Just _endDate) -> t `before` _endDate
+
+withGetitFile :: String -> State Tasks Tasks -> IO ()
+withGetitFile fn action = do
+  putStrLn $ "Retrieving from " ++ fn
+  tasks <- getTasks fn
+
+  let onTasks  = runState action tasks
+  let newTasks = fst onTasks
+
+  store fn $! newTasks
+  putStrLn $ "Saved to " ++ fn
+
+  return ()
+
+couldBeDateFromArgs args fmt parseDate option = do
+  let mightBeDate = getArg args (argument option)
+  putStrLn $ "Formatting '" ++ (show mightBeDate) ++ "' according to " ++ fmt
+
+  return $ parseDate <$> mightBeDate
+

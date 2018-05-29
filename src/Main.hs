@@ -11,7 +11,6 @@ import System.IO
 import System.Exit
 import Item
 import Tasks
-import Menu
 
 patterns :: Docopt
 patterns = [docoptFile|src/USAGE.txt|]
@@ -69,7 +68,7 @@ main = do
   fmt <- getArgOrExit args (longOption "format")
 
   let parseWithFormatString = parseTimeOrError True defaultTimeLocale fmt
-  let couldBeADate = _couldBeADate args fmt parseWithFormatString
+  let couldBeADate = couldBeDateFromArgs args fmt parseWithFormatString
 
   -- store some sample tasks and events
   when (args `isPresent` (command "store")) $ do
@@ -113,8 +112,6 @@ main = do
     name <- getArgOrExit args (argument "name")
 
     withGetitFile fn $ finishTodo name
-
-  when (args `isPresent` (command "menu")) $ void $ getitMenuAction
 
   when (args `isPresent` (command "soon")) $ do
     ct <- getCurrentTime
