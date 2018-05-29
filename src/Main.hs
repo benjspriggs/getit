@@ -23,6 +23,14 @@ withGetitFile fn action = do
   putStrLn $ "Retrieving tasks from " ++ fn
   tasks <- getTasks fn
 
+  -- notify of tasks due now
+  ct <- getCurrentTime
+  let dueSoon = filter (fromMaybe False . dueBy ct) tasks
+
+  when (length dueSoon > 0) $ do
+    putStrLn "The following tasks are due NOW!"
+    putStr $ unlines $ map show dueSoon
+
   let onTasks  = runState action tasks
   let newTasks = fst onTasks
   let changed = tasks /= newTasks
@@ -93,6 +101,12 @@ main = do
   when (args `isPresent` (command "list")) $ do
     tasks <- getTasks fn
     ct <- getCurrentTime
+    let dueSoon = filter (fromMaybe False . dueBy ct) tasks
+
+    when (length dueSoon > 0) $ do
+      putStrLn "The following things are due by RIGHT NOW!"
+      putStr $ unlines $ map show dueSoon
+
     putStrLn $ pretty "due" (dueBy ct) tasks
 
   when (args `isPresent` (command "done")) $ do
