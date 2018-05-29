@@ -7,6 +7,7 @@ import Control.Monad
 import Control.Monad.State
 import System.Environment
 import System.Console.Docopt
+import System.IO
 import System.Exit
 import Item
 import Tasks
@@ -15,6 +16,39 @@ patterns :: Docopt
 patterns = [docoptFile|src/USAGE.txt|]
 
 getArgOrExit = getArgOrExitWith patterns
+
+withGetitFile :: String -> State Tasks Tasks -> IO ()
+withGetitFile fn action = do
+  putStrLn $ "Retrieving tasks from " ++ fn
+  tasks <- getTasks fn
+
+  let onTasks  = runState action tasks
+  let newTasks = fst onTasks
+  let changed = tasks /= newTasks
+  let save = do
+          store fn $! newTasks
+          putStrLn $ "Saved tasks to " ++ fn
+
+  when changed $ do
+    let added = length tasks < length newTasks
+    when added $ do
+      when (any (\t -> any (overlap t) newTasks) newTasks) $ do
+        putStr "Overlaping todos found, continue saving? (y/n/q) "
+        hFlush stdout
+        confirm <- getChar
+        when (confirm == 'y') $ do
+          save
+    when (not added) $ do
+      save
+
+  return ()
+
+_couldBeADate args fmt _parse option = do
+  let mightBeDate = getArg args (argument option)
+  putStrLn $ "Formatting '" ++ (show mightBeDate) ++ "' according to " ++ fmt
+
+  let parsedDate = fmap _parse mightBeDate
+  return parsedDate
 
 main :: IO()
 main = do
@@ -74,3 +108,6 @@ main = do
     let soonTasks = filter (\t -> 0 >= (fromMaybe 0 $ remaining waterMark t)) tasks
 
     putStrLn $ pretty "done" (\t -> Just $ done t) soonTasks
+
+  when (args `isPresent` (command "clean")) $ do
+    withGetitFile fn $ removeFinishedTodos

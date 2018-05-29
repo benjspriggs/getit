@@ -69,3 +69,7 @@ pretty name f = conditionalColumns [TodoFormat name "✔" "✗" f]
 remaining :: UTCTime -> TodoItem -> Maybe NominalDiffTime
 remaining t (Todo d _ _ _) = (flip diffUTCTime) t <$> d
 remaining t (Event _ d _ _ _) = (flip diffUTCTime) t <$> d
+
+overlap :: TodoItem -> TodoItem -> Bool
+overlap (Event a b _ _ _) (Event c d _ _ _)  = not $ a >= d && b >= c
+overlap _ _ = False
