@@ -76,20 +76,26 @@ within t range = case range of
 
 withGetitFile :: String -> State Tasks Tasks -> IO ()
 withGetitFile fn action = do
-  putStrLn $ "Retrieving from " ++ fn
+  putStrLn $ "Retrieving tasks from " ++ fn
   tasks <- getTasks fn
 
   let onTasks  = runState action tasks
   let newTasks = fst onTasks
+  let changed = tasks /= newTasks
+  let save = do
+          store fn $! newTasks
+          putStrLn $ "Saved tasks to " ++ fn
 
-  store fn $! newTasks
-  putStrLn $ "Saved to " ++ fn
+  when changed $ do
+    let added = length tasks < length newTasks
+    when added $ do
+      when (any (\t -> any (overlap t) newTasks) newTasks) $ do
+        putStr "Overlaping todos found, continue saving? (y/n/q) "
+        hFlush stdout
+        confirm <- getChar
+        when (confirm == 'y') $ do
+          save
+    when (not added) $ do
+      save
 
   return ()
-
-couldBeDateFromArgs args fmt parseDate option = do
-  let mightBeDate = getArg args (argument option)
-  putStrLn $ "Formatting '" ++ (show mightBeDate) ++ "' according to " ++ fmt
-
-  return $ parseDate <$> mightBeDate
-
