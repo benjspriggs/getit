@@ -6,6 +6,7 @@ Usage:
 	getit menu [options]
 	getit done [options] <name>
 	getit soon [options] [<watermark>]
+	getit clean [options]
 
 Options:
 	-h, --help	Show this screen.
