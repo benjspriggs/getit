@@ -5,13 +5,16 @@ import Data.Maybe(Maybe, fromMaybe)
 import Item(TodoItem)
 
 data OpenConstraint a = Open a (Maybe UTCTime) (Maybe UTCTime)
-data SolvedConstraint a = Solved a UTCTime UTCTime
+data SolvedConstraint a = Solved a UTCTime UTCTime deriving (Eq)
 type Solution a = ([SolvedConstraint a], [OpenConstraint a])
 
-valid :: Solution a -> Bool
-valid = error "todo"
+overlap :: SolvedConstraint a -> SolvedConstraint a -> Bool
+overlap (Solved _ a b) (Solved _ c d)  = not $ a >= d && b >= c
 
-solveSchedule :: UTCTime -> UTCTime -> [OpenConstraint a] -> [Solution a]
+valid :: Eq a => Solution a -> Bool
+valid (solved, _) = (not . and) $ map (\(a, b) -> overlap a b) [(a,b) | a <- solved, b <- solved, a /= b]
+
+solveSchedule :: Eq a => UTCTime -> UTCTime -> [OpenConstraint a] -> [Solution a]
 solveSchedule start end constraints = [ solution | solution <- possibleSolutions start end constraints, valid solution ]
 
 subsets       :: [a] -> [[a]]
@@ -43,5 +46,5 @@ asSolution s e (toSolve, toOpen) = (map (giveTime s e) toSolve, toOpen)
 -- OpenConstraint, return a list of solution sets
 -- that may or may not be valid.
 possibleSolutions :: UTCTime -> UTCTime -> [OpenConstraint a] -> [Solution a]
-possibleSolutions start end constraints = [ asSolution start end possible | possible <- allPossibleSplits constraints ]
+possibleSolutions start end constraints = [ asSolution start end possible | possible <- allPossibleSplits $ concat $ permutations constraints ]
   where sortedConstraints = sortBy sortPredicate constraints
