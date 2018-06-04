@@ -68,10 +68,12 @@ spec = do
     let pickedStart = randDate 0 0
     let pickedEnd = randDate 100 0
 
-    it "all un-assigned dates give solutions with all open constraints" $ do
+    it "should give solution to all un-assigned dates" $ do
+      let count = 5
       let nothing = Open 0 Nothing Nothing
-      let nothings = replicate 5 nothing
+      let nothings = replicate count nothing
       let response = solveSchedule pickedStart pickedEnd nothings
       putStrLn $ show response
-      length response `shouldBe` 1
+      length response `shouldSatisfy` (>1)
+      (and $ map (\x -> length (fst x) + length (snd x) == count) $ response) `shouldBe` True
       
