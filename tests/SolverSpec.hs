@@ -51,7 +51,7 @@ spec = do
       let allSame = [solvedConstraint d zero zero | d <- [1..1000]]
       valid (allSame, []) `shouldBe` False
 
-      let pickedStart = randDate 0 100
-      let pickedEnd = randDate 0 1000
+      let pickedStart = randDate 0 0
+      let pickedEnd = randDate 10 100
       let allOverlapping = replicate 1000 $ solvedConstraint 0 pickedStart pickedEnd
       valid (allOverlapping, []) `shouldBe` False
