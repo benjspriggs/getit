@@ -63,3 +63,15 @@ spec = do
       let pickedEnd = randDate 10 100
       let allOverlapping = replicate 1000 $ solvedConstraint 0 pickedStart pickedEnd
       valid (allOverlapping, []) `shouldBe` False
+
+  describe "solveSchedule" $ do
+    let pickedStart = randDate 0 0
+    let pickedEnd = randDate 100 0
+
+    it "all un-assigned dates give solutions with all open constraints" $ do
+      let nothing = Open 0 Nothing Nothing
+      let nothings = replicate 5 nothing
+      let response = solveSchedule pickedStart pickedEnd nothings
+      putStrLn $ show response
+      length response `shouldBe` 1
+      
