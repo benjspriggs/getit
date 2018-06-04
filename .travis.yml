@@ -21,6 +21,7 @@ before_install:
 install:
   - stack install
 script:
+  - stack test
   - stack exec getit list
   - stack exec getit store
   - stack exec getit list
