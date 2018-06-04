@@ -1,12 +1,15 @@
 module Solver where
-import Data.List(permutations, concat, sortBy, delete)
+import Data.List(permutations, concat, sortBy, delete, nub)
 import Data.Time(UTCTime)
 import Data.Maybe(Maybe, fromMaybe)
 import Item(TodoItem)
 
-data OpenConstraint a = Open a (Maybe UTCTime) (Maybe UTCTime)
+data OpenConstraint a = Open a (Maybe UTCTime) (Maybe UTCTime) deriving (Show)
 data SolvedConstraint a = Solved a UTCTime UTCTime deriving (Eq, Show)
 type Solution a = ([SolvedConstraint a], [OpenConstraint a])
+
+instance Eq (OpenConstraint a) where
+  (Open _ a b) == (Open _ c d) = a == b && c == d
 
 solvedConstraint :: a -> UTCTime -> UTCTime -> SolvedConstraint a
 solvedConstraint val start end 
@@ -22,7 +25,7 @@ valid (solved, _) = (not . or) $ map (containsOverlap solved) solved
   where containsOverlap xs x = or $ map (\y -> overlap x y) (delete x xs)
 
 solveSchedule :: Eq a => UTCTime -> UTCTime -> [OpenConstraint a] -> [Solution a]
-solveSchedule start end constraints = [ solution | solution <- possibleSolutions start end constraints, valid solution ]
+solveSchedule start end constraints = nub [ solution | solution <- possibleSolutions start end constraints, valid solution ]
 
 subsets       :: [a] -> [[a]]
 subsets []     = [[]]
@@ -53,5 +56,5 @@ asSolution s e (toSolve, toOpen) = (map (giveTime s e) toSolve, toOpen)
 -- OpenConstraint, return a list of solution sets
 -- that may or may not be valid.
 possibleSolutions :: UTCTime -> UTCTime -> [OpenConstraint a] -> [Solution a]
-possibleSolutions start end constraints = [ asSolution start end possible | possible <- allPossibleSplits $ concat $ permutations constraints ]
+possibleSolutions start end constraints = map (\possible -> asSolution start end possible) $ allPossibleSplits sortedConstraints
   where sortedConstraints = sortBy sortPredicate constraints
