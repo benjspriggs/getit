@@ -27,6 +27,8 @@ instance Arbitrary a => Arbitrary (SolvedConstraint a) where
 
 spec :: Spec
 spec = do
+  let randDate d diff = UTCTime (ModifiedJulianDay $ d + diff) (secondsToDiffTime $ d * 10)
+
   describe "overlap" $ do
     it "distinct events commute" $ 
       property $ \a b -> a /= b ==> 
@@ -36,8 +38,13 @@ spec = do
       property $ \a -> 
         overlap (a :: SolvedConstraint Int) a == overlap a a
 
+    it "same event should overlap" $ do
+      let pickedStart = randDate 0 0
+      let pickedEnd = randDate 10 100
+      let randSolvedDate = solvedConstraint 0 pickedStart pickedEnd
+      overlap randSolvedDate randSolvedDate `shouldBe` True
+
   describe "valid" $ do
-    let randDate d diff = UTCTime (ModifiedJulianDay $ d + diff) (secondsToDiffTime $ d * 10)
     let zero = UTCTime (ModifiedJulianDay 0) 0
 
     it "accepts empty solutions" $ do
@@ -47,10 +54,11 @@ spec = do
       let firstSolved = [solvedConstraint d (randDate d 0) (randDate d 10) | d <- [1..1000]]
       valid (firstSolved, []) `shouldBe` True
 
-    it "rejects invalid solutions" $ do
+    it "rejects solved constraints that are all the same" $ do
       let allSame = [solvedConstraint d zero zero | d <- [1..1000]]
       valid (allSame, []) `shouldBe` False
 
+    it "rejects solved constraints that are all overlapping" $ do
       let pickedStart = randDate 0 0
       let pickedEnd = randDate 10 100
       let allOverlapping = replicate 1000 $ solvedConstraint 0 pickedStart pickedEnd
