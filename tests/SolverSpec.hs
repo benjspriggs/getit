@@ -48,8 +48,8 @@ spec = do
       valid (firstSolved, []) `shouldBe` True
 
     it "rejects invalid solutions" $ do
-      let backwards = [solvedConstraint d zero zero | d <- [1..1000]]
-      valid (backwards, []) `shouldBe` False
+      let allSame = [solvedConstraint d zero zero | d <- [1..1000]]
+      valid (allSame, []) `shouldBe` False
 
       let pickedStart = randDate 0 100
       let pickedEnd = randDate 0 1000
