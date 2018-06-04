@@ -14,12 +14,12 @@ solvedConstraint val start end
                      | otherwise   = Solved val start end
 
 overlap :: SolvedConstraint a -> SolvedConstraint a -> Bool
-overlap (Solved _ a b) (Solved _ c d)  = not $ a >= d && c >= b
+overlap (Solved _ a b) (Solved _ c d)  = a >= d && c >= b
 
 valid :: Eq a => Solution a -> Bool
-valid ([],_) = True
-valid (solved, _) = or $ map (\a -> containsOverlap a solved) solved
-  where containsOverlap x xs = or $ map (\y -> overlap x y) (delete x xs)
+valid ([], _)     = True
+valid (solved, _) = (not . or) $ map (containsOverlap solved) solved
+  where containsOverlap xs x = or $ map (\y -> overlap x y) (delete x xs)
 
 solveSchedule :: Eq a => UTCTime -> UTCTime -> [OpenConstraint a] -> [Solution a]
 solveSchedule start end constraints = [ solution | solution <- possibleSolutions start end constraints, valid solution ]
