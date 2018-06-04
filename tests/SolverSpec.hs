@@ -35,7 +35,6 @@ spec = do
     it "nondistinct events commute" $ 
       property $ \a -> 
         overlap (a :: SolvedConstraint Int) a == overlap a a
-    
 
   describe "valid" $ do
     let randDate d diff = UTCTime (ModifiedJulianDay $ d + diff) (secondsToDiffTime $ d * 10)
