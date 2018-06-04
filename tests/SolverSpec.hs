@@ -32,7 +32,7 @@ spec = do
       property $ \a b -> a /= b ==> 
         overlap (a :: SolvedConstraint Int) (b :: SolvedConstraint Int) == overlap b a
 
-  describe "solved" $ do
+  describe "valid" $ do
     let randDate d diff = UTCTime (ModifiedJulianDay $ d + diff) (secondsToDiffTime $ d * 10)
     let zero = UTCTime (ModifiedJulianDay 0) 0
 
