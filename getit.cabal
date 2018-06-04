@@ -48,13 +48,33 @@ extra-source-files:  ChangeLog.md, README.md
 -- Constraint on the version of Cabal needed to build this package.
 cabal-version:       >=1.10
 
+Test-suite spec
+  Type:                exitcode-stdio-1.0
+  Default-Language:    Haskell2010
+  Hs-Source-Dirs:      tests, src
+  Main-is:             Spec.hs
+  Build-depends:       base >=4.9 && <4.11,
+                       QuickCheck >= 2.11.3,
+                       hspec >= 2.4.8,
+                       getit
+
+library
+  hs-source-dirs:      src
+  exposed-modules:     Item, Tasks, Solver
+  default-language:    Haskell2010
+  build-depends:       base >=4.9 && <4.11,
+                       utility-ht >= 0.0.14,
+                       text >= 1.2.3.0,
+                       time >= 1.6.0.1,
+                       mtl >= 2.2.2,
+                       strict >= 0.3.2
 
 executable getit
   -- .hs or .lhs file containing the Main module.
   main-is:             Main.hs
   
   -- Modules included in this executable, other than Main.
-  other-modules:       Item, Menu, Tasks, Solver
+  -- other-modules:       Item, Menu, Tasks, Solver
   
   -- LANGUAGE extensions used by modules in this package.
   -- other-extensions:    
@@ -67,7 +87,8 @@ executable getit
                        time >= 1.6.0.1,
                        mtl >= 2.2.2,
                        strict >= 0.3.2,
-                       byline >= 0.3.1.0
+                       byline >= 0.3.1.0,
+                       getit
   
   -- Directories containing source files.
   hs-source-dirs:      src

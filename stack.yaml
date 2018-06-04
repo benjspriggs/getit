@@ -2,4 +2,5 @@ flags: {}
 extra-deps:
 - byline-0.3.1.0
 - terminfo-hs-0.2.1
+- QuickCheck-2.11.3
 resolver: lts-11.10
