@@ -75,5 +75,5 @@ spec = do
       let response = solveSchedule pickedStart pickedEnd nothings
       putStrLn $ show response
       length response `shouldSatisfy` (>1)
-      (and $ map (\x -> length (fst x) + length (snd x) == count) $ response) `shouldBe` True
+      (and $ map (\x -> length (fst x) + length (snd x) == count) response) `shouldBe` True
       
