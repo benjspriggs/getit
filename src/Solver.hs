@@ -5,8 +5,12 @@ import Data.Maybe(Maybe, fromMaybe)
 import Item(TodoItem)
 
 data OpenConstraint a = Open a (Maybe UTCTime) (Maybe UTCTime)
-data SolvedConstraint a = Solved a UTCTime UTCTime deriving (Eq)
+data SolvedConstraint a = Solved a UTCTime UTCTime deriving (Eq, Show)
 type Solution a = ([SolvedConstraint a], [OpenConstraint a])
+
+solvedConstraint :: a -> UTCTime -> UTCTime -> SolvedConstraint a
+solvedConstraint val start end | start > end = error "start date must be before end date"
+                     | otherwise   = Solved val start end
 
 overlap :: SolvedConstraint a -> SolvedConstraint a -> Bool
 overlap (Solved _ a b) (Solved _ c d)  = not $ a >= d && b >= c
