@@ -1,5 +1,5 @@
 module Solver where
-import Data.List(permutations, concat, sortBy)
+import Data.List(permutations, concat, sortBy, delete)
 import Data.Time(UTCTime)
 import Data.Maybe(Maybe, fromMaybe)
 import Item(TodoItem)
@@ -16,7 +16,9 @@ overlap :: SolvedConstraint a -> SolvedConstraint a -> Bool
 overlap (Solved _ a b) (Solved _ c d)  = not $ a >= d && b >= c
 
 valid :: Eq a => Solution a -> Bool
-valid (solved, _) = (not . and) $ map (\(a, b) -> overlap a b) [(a,b) | a <- solved, b <- solved, a /= b]
+valid ([],_) = True
+valid (solved, _) = or $ map (\a -> containsOverlap a solved) solved
+  where containsOverlap x xs = or $ delete True $ map (\y -> overlap x y) xs
 
 solveSchedule :: Eq a => UTCTime -> UTCTime -> [OpenConstraint a] -> [Solution a]
 solveSchedule start end constraints = [ solution | solution <- possibleSolutions start end constraints, valid solution ]
