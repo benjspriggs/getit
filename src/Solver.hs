@@ -14,7 +14,7 @@ solvedConstraint val start end
                      | otherwise   = Solved val start end
 
 overlap :: SolvedConstraint a -> SolvedConstraint a -> Bool
-overlap (Solved _ a b) (Solved _ c d)  = a >= d && c >= b
+overlap (Solved _ a b) (Solved _ c d)  = (a == c && b == d) || (a >= d && c >= b)
 
 valid :: Eq a => Solution a -> Bool
 valid ([], _)     = True
