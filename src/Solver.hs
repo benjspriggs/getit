@@ -9,7 +9,8 @@ data SolvedConstraint a = Solved a UTCTime UTCTime deriving (Eq, Show)
 type Solution a = ([SolvedConstraint a], [OpenConstraint a])
 
 solvedConstraint :: a -> UTCTime -> UTCTime -> SolvedConstraint a
-solvedConstraint val start end | start > end = error "start date must be before end date"
+solvedConstraint val start end 
+                     | start > end = error "start date must be before end date"
                      | otherwise   = Solved val start end
 
 overlap :: SolvedConstraint a -> SolvedConstraint a -> Bool
