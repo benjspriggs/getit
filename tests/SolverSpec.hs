@@ -38,7 +38,7 @@ spec = do
       property $ \a -> 
         overlap (a :: SolvedConstraint Int) a == overlap a a
 
-    it "same event should overlap" $ do
+    it "says the same event overlaps" $ do
       let pickedStart = randDate 0 0
       let pickedEnd = randDate 10 100
       let randSolvedDate = solvedConstraint 0 pickedStart pickedEnd
