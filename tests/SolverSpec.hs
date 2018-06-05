@@ -82,4 +82,8 @@ spec = do
     it "should add up to be the length of the list" $ do
       property $ do
         \xs -> and $ map (\xs' -> pairIsOfLength (length xs) xs') $ allPossibleSplits (xs :: [Int])
+
+    it "should give expected response to empty list" $ do
+      let emptyList = ([] :: [Int])
+      allPossibleSplits emptyList `shouldBe` [(emptyList,emptyList)]
       
