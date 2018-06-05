@@ -46,8 +46,8 @@ giveTime s e (Open item mStart mEnd) = Solved item newStart newEnd
   where newStart = fromMaybe s mStart
         newEnd = fromMaybe e mEnd
 
-allPossibleSplits :: [OpenConstraint a] -> [([OpenConstraint a], [OpenConstraint a])]
-allPossibleSplits cs = [splitAt n cs | n <- [0..(length cs)]]
+allPossibleSplits :: [a] -> [([a], [a])]
+allPossibleSplits xs = [splitAt n xs | n <- [0..(length xs)]]
 
 asSolution :: UTCTime -> UTCTime -> ([OpenConstraint a], [OpenConstraint a]) -> Solution a
 asSolution s e (toSolve, toOpen) = (map (giveTime s e) toSolve, toOpen)

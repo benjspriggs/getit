@@ -64,6 +64,8 @@ spec = do
       let allOverlapping = replicate 1000 $ solvedConstraint 0 pickedStart pickedEnd
       valid (allOverlapping, []) `shouldBe` False
 
+  let pairIsOfLength expected pair = length (fst pair) + length (snd pair) == expected
+
   describe "solveSchedule" $ do
     let pickedStart = randDate 0 0
     let pickedEnd = randDate 100 0
@@ -73,7 +75,11 @@ spec = do
       let nothing = Open 0 Nothing Nothing
       let nothings = replicate count nothing
       let response = solveSchedule pickedStart pickedEnd nothings
-      putStrLn $ show response
       length response `shouldSatisfy` (>1)
-      (and $ map (\x -> length (fst x) + length (snd x) == count) response) `shouldBe` True
+      (and $ map (\x -> pairIsOfLength count x) response) `shouldBe` True
+
+  describe "allPossibleSplits" $ do
+    it "should add up to be the length of the list" $ do
+      property $ do
+        \xs -> and $ map (\xs' -> pairIsOfLength (length xs) xs') $ allPossibleSplits (xs :: [Int])
       
